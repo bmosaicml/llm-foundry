@@ -121,8 +121,10 @@ class DecoupledLionW(Optimizer):
         # Sort keys to ensure every rank has the same keys order
         # Only L2 norm metric keys are present, can apply regular sort
         all_keys = sorted(all_keys)
-        print(f'All keys: {all_keys}. Optimizer metric: {optimizer_metrics.keys()}')
         for metric in all_keys:
+            if metric not in optimizer_metrics:
+                print(f'Metric {metric} not found')
+                continue
             if metric.startswith('l2_norm'):
                 reduced = optimizer_metrics[metric]
                 if dist.get_world_size() > 1:
