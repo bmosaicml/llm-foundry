@@ -118,13 +118,12 @@ class DecoupledLionW(Optimizer):
         for keys in all_gathered_keys:
             all_keys.update(keys)
 
-        print(f'{len(all_keys)}, {len(optimizer_metrics.keys())}, {len(k for k in all_keys if k not in optimizer_metrics)}')
+        print(f'{len(all_keys)}, {len(optimizer_metrics.keys())}, {set(len(k for k in all_keys if k not in optimizer_metrics))}')
         # Sort keys to ensure every rank has the same keys order
         # Only L2 norm metric keys are present, can apply regular sort
         all_keys = sorted(all_keys)
         for metric in all_keys:
             if metric not in optimizer_metrics:
-                print(f'Metric {metric} not found')
                 continue
             if metric.startswith('l2_norm'):
                 reduced = optimizer_metrics[metric]
